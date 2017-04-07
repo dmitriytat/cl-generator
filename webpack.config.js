@@ -2,7 +2,7 @@ const webpack = require('webpack');
 
 module.exports = {
     entry: {
-        index: './index.jsx',
+        index: './admin/index.jsx',
     },
     output: {
         path: __dirname + '/dist',
@@ -39,7 +39,7 @@ module.exports = {
             }
         ],
     },
-    devtool: "source-map",
+    devtool: "eval",
     plugins: [],
     devServer: {
         proxy: {

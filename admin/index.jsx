@@ -2,17 +2,15 @@ import 'babel-polyfill';
 import React from 'react';
 import {render} from 'react-dom';
 
-import './reset.scss';
-
 import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider} from 'react-redux';
 import {createLogger} from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 
-import Application from './src/Aplication.jsx';
+import Application from './Aplication.jsx';
 
-import rootReducer, {initState} from './src/reducers';
-import sagas from './src/sagas';
+import rootReducer, {initState} from './reducers';
+import sagas from './sagas';
 
 const sagaMiddleware = createSagaMiddleware();
 const logger = createLogger();

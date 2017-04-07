@@ -4,7 +4,7 @@ module.exports = function(config) {
         reporters: ['spec'],
         frameworks: ['jasmine'],
         files: [
-            './src/**/*.spec.js'
+            'admin/**/*.spec.js'
         ],
         preprocessors: {
             './src/**/*.spec.js': ['webpack']

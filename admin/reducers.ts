@@ -1,10 +1,11 @@
-import {FIELD_ADD,
+import {
+    FIELD_ADD,
     FIELD_CHANGE_VALUE,
     IFieldAction,
     FIELD_OPEN_FIELD_PARAM,
-    FIELD_PARAM_CHANGE_VALUE,
+    FIELD_PARAM_CHANGE_VALUE, FIELD_REMOVE,
 } from './actions';
-import {IField, Id} from "./components/iField";
+import {IField, Id} from "../shared/components/IField";
 
 interface IState {
     mode: string,
@@ -24,6 +25,8 @@ export  default  function reducer(state: IState, action: any): IState {
             return onAddField(state, action);
         case FIELD_OPEN_FIELD_PARAM:
             return onOpenFieldParam(state, action);
+        case FIELD_REMOVE:
+            return onRemoveField(state, action);
         case FIELD_PARAM_CHANGE_VALUE:
             return onChangeFieldParam(state, action);
         default:
@@ -31,13 +34,13 @@ export  default  function reducer(state: IState, action: any): IState {
     }
 }
 
-let id: Id = 1;
+let id = 1;
 function onAddField(state: IState, {field}: IFieldAction): IState {
     let fields = state.fields.slice(0);
 
     fields = fields.concat([{
         type: field.type,
-        id: id++,
+        id: (id++).toString(),
         name: field.name || '',
         value: field.value || '',
         label: field.label || '',
@@ -68,5 +71,14 @@ function onOpenFieldParam(state: IState, {field}: IFieldAction): IState {
     return {
         ...state,
         currentField: field.id,
+    };
+}
+
+function onRemoveField(state: IState, {field}: IFieldAction) {
+    const fields = state.fields.filter(f => f.id !== field.id);
+
+    return {
+        ...state,
+        fields,
     };
 }

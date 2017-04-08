@@ -4,10 +4,10 @@ module.exports = function(config) {
         reporters: ['spec'],
         frameworks: ['jasmine'],
         files: [
-            'admin/**/*.spec.js'
+            'tests/**/*.spec.js'
         ],
         preprocessors: {
-            './src/**/*.spec.js': ['webpack']
+            'tests/**/*': ['webpack'],
         },
         webpack: require("./webpack.config.js"),
     });

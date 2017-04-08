@@ -1,33 +1,34 @@
 import React from 'react';
 import {connect} from 'react-redux';
-
-import Grid from 'react-uikit-grid';
-import Panel from 'react-uikit-panel';
-import Form from 'react-uikit-form';
-import FormInput from 'react-uikit-form/lib/form-input';
-import FormReduxInput from 'react-uikit-form/lib/form-redux-input';
-import Icons from 'react-uikit-icons';
-import Button from 'react-uikit-button';
-
-import injectSheet from 'react-jss';
 import autobind  from 'autobind-decorator';
+import injectSheet from 'react-jss';
+
+import {
+    Glyphicon,
+    Col,
+    Row,
+    Grid,
+    Button,
+    Panel,
+} from 'react-bootstrap';
+
+import Control from './components/control/control';
+import Params from './containers/params/params';
+
+import { calculate } from '../shared/calculate';
 
 import * as actions from './actions';
 
 const sheet = {
-    application: {
-        // backgroundColor: '#eee',
-    },
+    application: {},
     control: {
         display: 'inline-block',
-        width: '80%',
+        width: '70%',
 
     },
     button: {
         display: 'inline-block',
-        width: '20%',
-        position: 'relative',
-        top: '7px',
+        width: '30%',
     }
 };
 
@@ -42,62 +43,61 @@ const TYPES = ['text', 'checkbox', 'radio', 'select'];
 export default class Application extends React.Component {
     render() {
         const {classes, fields, currentField} = this.props;
-        const currentFieldParams = fields.find(({id}) => currentField === id);
 
         return (
             <div className={classes.application}>
-                <Grid gutter='small'>
-                    <Panel col='1-3' box>
-                        {TYPES.map((type, i) =>
-                            <div key={i}>
-                                <div className={classes.control}>
-                                    <FormInput
-                                        type={type}
-                                        label={type}
-                                    />
+                <Grid fluid={true}>
+                    <Row className="show-grid">
+                        <Col sm={12} md={4}>
+                            {TYPES.map((type, i) =>
+                                <div key={i}>
+                                    <div className={classes.control}>
+                                        <Control
+                                            id={i.toString()}
+                                            type={type}
+                                            label={type}
+                                        />
+                                    </div>
+                                    <div className={classes.button}>
+                                        <Button onClick={() => this.handleAddControl(type)}>
+                                            <Glyphicon glyph="plus"/>
+                                        </Button>
+                                    </div>
                                 </div>
-                                <div className={classes.button}>
-                                    <Button context='success' margin='bottom right' onClick={() => this.handleAddControl(type)}>
-                                        <Icons icon='plus' />
-                                    </Button>
+                            )}
+                        </Col>
+                        <Col sm={12} md={4}>
+                            {this.props.fields.map(({id, label, type, value, name}) =>
+                                <div key={id}>
+                                    <div className={classes.control}>
+                                        <Control
+                                            type={type}
+                                            label={label}
+                                            id={id}
+                                            value={value}
+                                            name={name}
+                                        />
+                                    </div>
+                                    <div className={classes.button}>
+                                        <Button onClick={() => this.handleControlRemove(id)}>
+                                            <Glyphicon glyph="remove"/>
+                                        </Button>
+                                        <Button onClick={() => this.handleControlProp(id)}>
+                                            <Glyphicon glyph="option-horizontal"/>
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </Panel>
-
-                    <Panel col='1-3' box>
-                        {this.props.fields.map(({id, label, type, value, name}) =>
-                            <div key={id}>
-                                <div className={classes.control}>
-                                    <FormInput
-                                        type={type}
-                                        label={label}
-                                        id={id}
-                                        value={value}
-                                        name={name}
-                                    />
-                                </div>
-                                <div className={classes.button}>
-                                    <Button context='success' margin='bottom right' onClick={() => this.handleControlProp(id)}>
-                                        <Icons icon='cog' />
-                                    </Button>
-                                </div>
-                            </div>
-                        )}
-                    </Panel>
-
-                    <Panel col='1-3' box>
-                        {currentFieldParams && Object.keys(currentFieldParams).map(key =>
-                            <FormInput
-                                key={key}
-                                type='text'
-                                label={key}
-                                value={currentFieldParams[key]}
-                                onChange={(event) => this.handleControlChange(key, event.target.value)}
-                            />
-                        )}
-                    </Panel>
+                            )}
+                        </Col>
+                        <Col sm={12} md={4}>
+                            <Params />
+                        </Col>
+                    </Row>
                 </Grid>
+                <Panel header="Ответ '{a}+{b}+{c}'">{calculate('{a}+{b}+{c}', fields)}</Panel>
+                <div>
+                    {JSON.stringify(fields)}
+                </div>
             </div>
         );
     }
@@ -113,7 +113,7 @@ export default class Application extends React.Component {
     }
 
     @autobind
-    handleControlChange(key, value) {
-        this.props.dispatch(actions.changeParam(key, value));
+    handleControlRemove(id) {
+        this.props.dispatch(actions.removeField(id));
     }
 }
